@@ -1,4 +1,4 @@
-function SpinnerWheel({ options, selectedCategory, resultText, spinning, onSpin }) {
+function SpinnerWheel({ options, selectedCategory, resultText, spinning, isSubmitting, onSpin }) {
   const segmentAngle = 360 / options.length;
 
   const wheelStyle = {
@@ -46,13 +46,9 @@ function SpinnerWheel({ options, selectedCategory, resultText, spinning, onSpin 
       </div>
 
       <div className="spinner-actions">
-        <button type="button" className="primary-button" onClick={onSpin} disabled={spinning}>
+        <button type="button" className="primary-button" onClick={onSpin} disabled={isSubmitting}>
           {spinning ? 'Spinning...' : 'SPIN'}
         </button>
-      </div>
-
-      <div className="result-box">
-        <div className="result-label">{resultText || 'Your lucky choice is waiting...'}</div>
       </div>
 
       <div className="category-tag">Category: {selectedCategory === 'money' ? 'Pocket Money' : 'Cloth'}</div>
