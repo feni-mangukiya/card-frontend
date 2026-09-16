@@ -1,5 +1,8 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://card-backend-cuyg.onrender.com';
-console.log('API_BASE_URL:', API_BASE_URL);
+const configuredApiUrl = import.meta.env.VITE_API_URL || 'https://card-backend-cuyg.onrender.com/api';
+const API_BASE_URL = configuredApiUrl.replace(/\/+$/, '').endsWith('/api')
+  ? configuredApiUrl.replace(/\/+$/, '')
+  : `${configuredApiUrl.replace(/\/+$/, '')}/api`;
+
 async function apiRequest(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     headers: {

@@ -24,6 +24,7 @@ function BirthdayPage() {
   const [spinResults, setSpinResults] = useState([]);
   const [resultDisplay, setResultDisplay] = useState('');
   const [spinning, setSpinning] = useState(false);
+  const [spinSubmitting, setSpinSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [finalGift, setFinalGift] = useState(null);
@@ -128,13 +129,15 @@ function BirthdayPage() {
   };
 
   const handleSpin = async () => {
-    if (!sessionId || spinning || loading || spinResults.length >= 2) {
+    if (!sessionId || spinSubmitting || loading || spinResults.length >= 2) {
       setError('Your two lucky spins are already complete.');
       return;
     }
 
     try {
-      setSpinning(true);
+      const isSecondSpin = spinResults.length === 1;
+      setSpinSubmitting(true);
+      setSpinning(!isSecondSpin);
       setLoading(true);
       setError('');
       setStatusMessage('');
@@ -151,28 +154,31 @@ function BirthdayPage() {
       const wheel = document.querySelector('.spinner-wheel');
       const shouldAnimateWheel = spinNumber === 1;
       if (wheel && shouldAnimateWheel) {
-        wheel.style.transform = `rotate(${(spinNumber + 5) * 360 + 720}deg)`;
+        const resultIndex = categoryOptions.indexOf(res.result);
+        const segmentAngle = 360 / categoryOptions.length;
+        const targetRotation = 6 * 360 - (resultIndex + 0.5) * segmentAngle;
+        wheel.style.transform = `rotate(${targetRotation}deg)`;
       }
 
       const finishSpin = () => {
         setSpinning(false);
+        setSpinSubmitting(false);
         setLoading(false);
       };
 
       if (shouldAnimateWheel) {
-        setTimeout(finishSpin, 1800);
+        setTimeout(finishSpin, 2800);
       } else {
         finishSpin();
       }
 
       if (res.totalSpins >= 2) {
-        setTimeout(() => {
-          setView('final');
-        }, 1200);
+        setView('final');
       }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
       setSpinning(false);
+      setSpinSubmitting(false);
       setLoading(false);
     }
   };
@@ -232,6 +238,7 @@ function BirthdayPage() {
             selectedCategory={selectedCategory}
             resultText={resultDisplay || 'Your lucky choice is waiting...'}
             spinning={spinning}
+            isSubmitting={spinSubmitting}
             onSpin={handleSpin}
           />
         </>
@@ -241,18 +248,13 @@ function BirthdayPage() {
         </div>
       )}
 
-      {spinResults.length > 0 && (
-        <div className="spin-history">
-          {spinResults.map((spin) => (
-            <div key={`${spin.category}-${spin.spinNumber}`} className="spin-history-item">
-              <span>Spin {spin.spinNumber}</span>
-              <strong>{spin.result}</strong>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="spin-count" role="status">
+        {spinResults.length < 2
+          ? `Spin ${spinResults.length + 1} of 2 available · ${2 - spinResults.length} ${2 - spinResults.length === 1 ? 'spin' : 'spins'} remaining`
+          : 'You have used both spins.'}
+      </div>
 
-      <SpinResult result={resultDisplay} visible={Boolean(resultDisplay && !spinning)} />
+      <SpinResult result={resultDisplay} visible={Boolean(resultDisplay && !spinning && !spinSubmitting)} />
 
       {error && <div className="error-banner">{error}</div>}
       {statusMessage && <div className="success-banner">{statusMessage}</div>}

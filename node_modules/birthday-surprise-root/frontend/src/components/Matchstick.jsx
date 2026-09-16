@@ -8,8 +8,9 @@ function Matchstick({ onClick, isVisible = true }) {
       aria-label="Light the candle"
       onClick={onClick}
     >
-      <span className="matchstick-stick" />
-      <span className="matchstick-head" />
+      <span className="match-candle" aria-hidden="true">
+        <span className="match-candle-flame" />
+      </span>
     </button>
   );
 }
