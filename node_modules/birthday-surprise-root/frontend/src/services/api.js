@@ -1,5 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://card-backend-cuyg.onrender.com';
+console.log('API_BASE_URL:', API_BASE_URL);
 async function apiRequest(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     headers: {

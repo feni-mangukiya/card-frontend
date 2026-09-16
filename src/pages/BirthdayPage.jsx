@@ -149,14 +149,21 @@ function BirthdayPage() {
 
       const spinNumber = res.spinNumber;
       const wheel = document.querySelector('.spinner-wheel');
-      if (wheel) {
+      const shouldAnimateWheel = spinNumber === 1;
+      if (wheel && shouldAnimateWheel) {
         wheel.style.transform = `rotate(${(spinNumber + 5) * 360 + 720}deg)`;
       }
 
-      setTimeout(() => {
+      const finishSpin = () => {
         setSpinning(false);
         setLoading(false);
-      }, 1800);
+      };
+
+      if (shouldAnimateWheel) {
+        setTimeout(finishSpin, 1800);
+      } else {
+        finishSpin();
+      }
 
       if (res.totalSpins >= 2) {
         setTimeout(() => {
