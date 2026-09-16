@@ -16,7 +16,9 @@ async function apiRequest(path, options = {}) {
 
   if (!response.ok) {
     const message = data.message || 'Something went wrong. Please try again.';
-    throw new Error(message);
+    const error = new Error(message);
+    error.status = response.status;
+    throw error;
   }
 
   return data;
@@ -29,14 +31,34 @@ export const createSpin = (sessionId, category) => apiRequest('/spins', {
   body: JSON.stringify({ sessionId, category })
 });
 
-export const getSpinsBySession = (sessionId) => apiRequest(`/spins/${sessionId}`);
+export const getSpinsBySession = async (sessionId) => {
+  try {
+    return await apiRequest(`/spins/${sessionId}`);
+  } catch (error) {
+    if (error.status === 404) {
+      return { success: true, totalSpins: 0, remainingSpins: 2, results: [] };
+    }
+
+    throw error;
+  }
+};
 
 export const createFinalGift = (sessionId, selectedResult) => apiRequest('/final-gift', {
   method: 'POST',
   body: JSON.stringify({ sessionId, selectedResult })
 });
 
-export const getFinalGiftBySession = (sessionId) => apiRequest(`/final-gift/${sessionId}`);
+export const getFinalGiftBySession = async (sessionId) => {
+  try {
+    return await apiRequest(`/final-gift/${sessionId}`);
+  } catch (error) {
+    if (error.status === 404) {
+      return { success: true, hasFinalGift: false, finalGift: null, results: [] };
+    }
+
+    throw error;
+  }
+};
 
 export const getAdminStats = (adminKey) => apiRequest('/admin/stats', {
   headers: {
