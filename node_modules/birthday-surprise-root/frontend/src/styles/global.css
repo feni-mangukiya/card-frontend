@@ -975,7 +975,9 @@ th {
   .birthday-stage {
     flex-wrap: wrap;
     justify-content: center;
-    min-height: 340px;
+    gap: 0;
+    min-height: 0;
+    margin-top: 16px;
   }
 
   .person-spot {
@@ -983,16 +985,28 @@ th {
     width: 80px;
   }
 
+  .person-spot:not(.visible) {
+    display: none;
+  }
+
   .cake-area {
     order: 2;
     width: 100%;
+  }
+
+  .cake-scene {
+    height: 210px;
   }
 
   .match-area {
     order: 3;
     width: 100%;
     padding-bottom: 0;
-    margin-top: -14px;
+    margin-top: -22px;
+  }
+
+  .interaction-message {
+    margin-top: 12px;
   }
 
   .choice-grid,

@@ -48,7 +48,7 @@ function BirthdayIntro({
         ) : candleLit ? (
           <span>Click the person to blow the candle.</span>
         ) : (
-          <span>Click the matchstick to light the candle.</span>
+          <span>Click the candle to light it.</span>
         )}
       </div>
     </div>
